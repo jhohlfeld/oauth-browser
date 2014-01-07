@@ -1,0 +1,39 @@
+{
+  "name": "oauth-browser",
+  "version": "0.0.1",
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ],
+  "dependencies": {
+    "jquery": "~2.0.3",
+    "backbone": "~1.0.0",
+    "requirejs": "~2.1.8",
+    "backbone.localStorage": "~1.1.7",
+    "bootstrap": "~3.0.0",
+    "lodash-template-loader": "~0.1.2",
+    "backbone.epoxy": "~1.0.2",
+    "requirejs-plugins": "~1.0.2",
+    "bootstrap-social-buttons": "~1.0.0",
+    "when": "~2.7.0",
+    "crypto-js": "https://crypto-js.googlecode.com/files/CryptoJS%20v3.1.2.zip"
+  },
+  "exportsOverride": {
+    "lodash": {
+      "js": "dist/lodash.js"
+    }
+  },
+  "authors": [
+    "Jakob Hohlfeld <jakob.hohlfeld@netronaut.de>"
+  ],
+  "description": "Experiment on various web service's oauth capabilities - including google plus, facebook and windows live.",
+  "main": "index.html",
+  "keywords": [
+    "oauth2",
+    "implicit-grant"
+  ],
+  "license": "MIT"
+}
