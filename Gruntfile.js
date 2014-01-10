@@ -7,7 +7,7 @@ module.exports = function(grunt) {
                     install: false,
                     layout: 'byComponent',
                     targetDir: './src/lib',
-                    cleanTargetDir: true,
+                    cleanTargetDir: false,
                     verbose: false
                 }
             }
