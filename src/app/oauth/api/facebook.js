@@ -6,8 +6,8 @@ define(['./oauth', 'lodash'], function(Profile, _) {
         authParams: {
             app_id: '568262759920841',
             client_id: 'ce767453b23218cdaf145b8dbb2aede7',
-            redirect_uri: 'http://dev.peoplepool.netronaut.de:4000/blank.html',
             response_type: 'token',
+            redirect_uri: '',
             scope: 'email'
         }
     };

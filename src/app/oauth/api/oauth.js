@@ -12,7 +12,17 @@ define(['lodash', 'backbone', 'when', 'crypto-js'], function(_, Backbone, when, 
      * @class Profile
      */
     var Profile = function(config) {
-        this.config = config;
+        this.config = _.extend({
+
+            // Default values for redirect_uri
+            //  may be overridden individually. if left blank,
+            //  the defaults which are set here are used: 
+            redirectUriConf: {
+                protocol: '',
+                host: '',
+                path: 'blank.html'
+            },
+        }, config);
         this.id = config.id;
         this.name = config.name;
     };
@@ -42,7 +52,18 @@ define(['lodash', 'backbone', 'when', 'crypto-js'], function(_, Backbone, when, 
         var randomNumber = Math.round(Math.random() * Math.pow(10, 16)),
             state = CryptoJS.SHA3(randomNumber.toString(16)),
             params = this.config.authParams;
+
+        // state - anit XSRF measure
         this.state = params['state'] = state.toString(CryptoJS.enc.Hex);
+
+        // build redirect_uri
+        if (!params.redirect_uri) {
+            var l = window.location,
+                c = this.config.redirectUriConf;
+            params.redirect_uri = (c.protocol || l.protocol) + '//' +
+                (c.host || l.host) + '/' + c.path;
+        }
+
         return this.config.authUri + '?' + _.map(params, function(v, k) {
             return k + '=' + encodeURI(v);
         }).join('&');
