@@ -2,10 +2,11 @@ requirejs.config({
     baseUrl: '',
     paths: {
         jquery: 'lib/jquery/jquery',
-        backbone: 'lib/backbone/backbone',
+        backbone_org: 'lib/backbone/backbone',
         'backbone_p': 'lib/backbone.plugin',
         lodash: 'lib/lodash/js/lodash',
         when: 'lib/when/when',
+        store: 'lib/store.js/store',
 
         bootstrap: 'lib/bootstrap/bootstrap',
         'backbone.epoxy': 'lib/backbone.epoxy/backbone.epoxy',
@@ -27,11 +28,12 @@ requirejs.config({
     },
     map: {
         '*': {
-            underscore: 'lodash'
+            underscore: 'lodash',
+            backbone: 'backbone_p'
         }
     },
     shim: {
-        'backbone': {
+        'backbone_org': {
             deps: ['underscore', 'jquery'],
             exports: 'Backbone'
         },
@@ -58,11 +60,10 @@ require(['jquery', 'app/oauth/view', 'lib/jquery.plugin', 'when'],
             profileResolver = deferred.resolver;
 
         login.on('authenticate', function(api) {
-            debugger;
-            console.log('authenticated using ' + api.name);
-            console.log(api.response);
-            
-            when.chain(api.requestProfile(), profileResolver, api);
+            console.log('authenticated using ' + api.get('name'));
+            console.log(api.attributes);
+
+            // when.chain(api.requestProfile(), profileResolver, api);
         });
 
         deferred.promise.then(function(api) {

@@ -1,21 +1,21 @@
 "use strict"
 define(['./oauth', 'lodash', 'backbone', 'when', 'jquery',
     'ldsh!./tpl/google-plus'
-], function(Profile, _, Backbone, when, $, tpl) {
+], function(oauth, _, Backbone, when, $, tpl) {
 
-    var config = {
+    var attributes = {
         id: 'google-plus',
         name: 'Google Plus',
+        authUri: 'https://accounts.google.com/o/oauth2/auth',
         authParams: {
             response_type: 'token',
             client_id: '498863542464-5rjn9g912doqridict2ron9b3bk15abm.apps.googleusercontent.com',
             redirect_uri: '',
             scope: 'profile email'
         },
-        authUri: 'https://accounts.google.com/o/oauth2/auth'
     };
 
-    var GooglePlus = Profile.extend({
+    var GooglePlus = oauth.Model.extend({
         setData: function(resp) {
             this.data = {
                 displayName: resp.displayName,
@@ -49,5 +49,6 @@ define(['./oauth', 'lodash', 'backbone', 'when', 'jquery',
         }
 
     });
-    return new GooglePlus(config);
+
+    return new GooglePlus(attributes);
 });

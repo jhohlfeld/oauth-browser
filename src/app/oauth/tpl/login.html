@@ -1,9 +1,9 @@
 <h2>Log In with one of these providers</h2>
 
 <ul>
-<% _.forIn(apis, function(api, key) { %>
-<li>
-	<a class="btn btn-<%- key %>" href="javascript:void(0);"><i class="fa fa-<%- key %>"></i>Sign-In with <%- api.name%></a>
-</li>
-<% }); %>
+    <% apis.forEach(function(api) { %>
+        <li>
+            <a class="btn btn-<%- api.id %>" href="javascript:void(0);"><i class="fa fa-<%- api.id %>"></i>Sign-In with <%- api.get('name')%></a>
+        </li>
+        <% }); %>
 </ul>

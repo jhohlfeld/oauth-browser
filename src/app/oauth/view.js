@@ -1,24 +1,22 @@
-define(['lodash', 'backbone', 'ldsh!./tpl/login', 'ldsh!./tpl/profile',
+define(['lodash', 'backbone', './api/oauth',
+    'ldsh!./tpl/login', 'ldsh!./tpl/profile',
     './api/google-plus', './api/facebook',
     /*'./microsoft-live', './stack-exchange',
     './linkedin'*/
 ], function(
-    _, Backbone, tpl_login, tpl_profile) {
+    _, Backbone, oauth, tpl_login, tpl_profile) {
+
+    "use strict"
 
     // provider profiles may be added beyond the third depenednecy
-    var api_profiles = _.values(arguments).slice(4);
+    var api_profiles = _.values(arguments).slice(5),
+        apis = new oauth.Collection(api_profiles);
 
     /**
-     * Initialize all profiles.
+     * Login view..
      *
-     * Authentication provider profiles are stored in a dictionary
-     * for future reference.
+     * @class LoginView
      */
-    var apis = {};
-    api_profiles.forEach(function(p) {
-        apis[p.id] = p;
-    });
-
     var LoginView = Backbone.View.extend({
         template: tpl_login,
         className: 'social-buttons',
@@ -27,9 +25,9 @@ define(['lodash', 'backbone', 'ldsh!./tpl/login', 'ldsh!./tpl/profile',
 
         bindEvents: function() {
             var self = this;
-            _.forIn(apis, function(api, key) {
+            apis.forEach(function(api) {
                 var cb = _.bind(self.authenticate, self, api);
-                self.$('.btn-' + key).on('click', cb);
+                self.$('.btn-' + api.get('id')).on('click', cb);
             });
         },
 
