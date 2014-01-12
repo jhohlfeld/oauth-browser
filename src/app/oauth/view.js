@@ -1,70 +1,73 @@
-define(['lodash', 'backbone', './api/oauth',
-    'ldsh!./tpl/login', 'ldsh!./tpl/profile',
-    './api/google-plus', './api/facebook',
-    /*'./microsoft-live', './stack-exchange',
-    './linkedin'*/
+define(['lodash', 'backbone',
+    'ldsh!./tpl/view', 'ldsh!./tpl/profile'
 ], function(
-    _, Backbone, oauth, tpl_login, tpl_profile) {
+    _, Backbone, tpl_view, tpl_profile) {
 
     "use strict"
-
-    // provider profiles may be added beyond the third depenednecy
-    var api_profiles = _.values(arguments).slice(5),
-        apis = new oauth.Collection(api_profiles);
 
     /**
      * Login view..
      *
-     * @class LoginView
+     * @class BrowserView
      */
-    var LoginView = Backbone.View.extend({
-        template: tpl_login,
-        className: 'social-buttons',
+    var BrowserView = Backbone.View.extend({
+
+        template: tpl_view,
+        className: 'social-buttons container',
+
+        events: {
+            'click .provider-list a': 'select'
+        },
 
         initialize: function() {},
 
-        bindEvents: function() {
-            var self = this;
-            apis.forEach(function(api) {
-                var cb = _.bind(self.authenticate, self, api);
-                self.$('.btn-' + api.get('id')).on('click', cb);
-            });
-        },
-
         render: function() {
             this.$el.html(this.template({
-                apis: apis
+                apis: this.options.apis
             }));
-            this.bindEvents();
             return this;
         },
 
-        authenticate: function(api, event) {
-            var self = this,
-                w = window.open();
-            api.request(w).then(function(resp) {
-                self.trigger('authenticate', api, resp);
-            });
+        select: function(event) {
+            this.$('.active').removeClass('active');
+            var el = $(event.target);
+            el.addClass('active');
+            this.trigger('select', el.data('key'));
         }
     });
 
     var ProfileView = Backbone.View.extend({
 
-        className: 'social-profile',
+        template: tpl_profile,
+        className: 'social-buttons-profile',
 
-        initialize: function() {
-            this.api = this.options.api;
-            this.data = this.api.getData(this.options.response);
+        events: {
+            'click a': 'authenticate'
         },
 
+        initialize: function() {},
+
         render: function() {
-            this.$el.html(this.api.render(this.data));
+            this.$el.html(this.template({
+                api: this.options.api
+            }));
             return this;
+        },
+
+        authenticate: function(event) {
+            var self = this,
+                w = window.open(),
+                api = this.options.api;
+            api.request(w).then(function(resp) {
+                debugger;
+                self.trigger('authenticate', api, resp);
+            });
         }
+
     });
 
     return {
-        LoginView: LoginView,
+        BrowserView: BrowserView,
         ProfileView: ProfileView
     };
 });

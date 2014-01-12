@@ -1,0 +1,22 @@
+<div class="row">
+
+    <h2 class="col-sm-12">Log In with one of these providers</h2>
+
+    <div class="col-sm-4">
+        <div class="panel panel-default provider-list">
+            <div class="panel-heading">OAuth2 Providers</div>
+            <div class="list-group">
+                <% apis.forEach(function(api) { %>
+                    <a href="javascript:void(0)" class="list-group-item" data-key="<%-api.id%>">
+                        <%- api.get( 'name')%>
+                    </a>
+                    <% }); %>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-sm-8 social-buttons-details">
+
+    </div>
+
+</div>

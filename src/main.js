@@ -46,31 +46,46 @@ requirejs.config({
     }
 });
 
-require(['jquery', 'app/oauth/view', 'lib/jquery.plugin', 'when'],
-    function($, oauth, jqp, when) {
-        $.loadCSS([
-            'css/main.css',
-            '//netdna.bootstrapcdn.com/font-awesome/4.0.1/css/font-awesome.css'
-        ]);
+require(['jquery', 'app/oauth/view', 'lib/jquery.plugin', 'when', 
+        'app/oauth/api/oauth',
+        'app/oauth/api/google-plus', 'app/oauth/api/facebook',
+        /*'./microsoft-live', './stack-exchange',
+    './linkedin'*/
+    ],
+    function($, oauthview, jqp, when, oauth) {
 
-        var login = new oauth.LoginView();
-        login.render().$el.appendTo($('body'));
+        // provider profiles may be added beyond the third depenednecy
+        var api_profiles = _.values(arguments).slice(5),
+            apis = new oauth.Collection(api_profiles);
 
-        var deferred = when.defer(),
-            profileResolver = deferred.resolver;
-
-        login.on('authenticate', function(api) {
-            console.log('authenticated using ' + api.get('name'));
-            console.log(api.attributes);
-
-            // when.chain(api.requestProfile(), profileResolver, api);
-        });
-
-        deferred.promise.then(function(api) {
-            console.log('displaying profile view');
-            var profileView = new oauth.ProfileView({
-                api: api
+        var browser = new oauthview.BrowserView({apis:apis}),
+            profile;
+        browser.on('select', function(key) {
+            if (profile) {
+                profile.$el.remove();
+            }
+            profile = new oauthview.ProfileView({
+                api: apis.get(key)
             });
-            profileView.render().$el.appendTo('body');
+            profile.on('authenticate', function(api) {
+                console.log('authenticated using ' + api.get('name'));
+                console.log(api.attributes);
+
+                // when.chain(api.requestProfile(), profileResolver, api);
+            });
+            profile.render().$el.appendTo('.social-buttons-details');
         });
+        browser.render().$el.appendTo($('body'));
+
+        // var deferred = when.defer(),
+        //     profileResolver = deferred.resolver;
+
+
+        // deferred.promise.then(function(api) {
+        //     console.log('displaying profile view');
+        //     var profileView = new oauthview.ProfileView({
+        //         api: api
+        //     });
+        //     profileView.render().$el.appendTo('body');
+        // });
     });
