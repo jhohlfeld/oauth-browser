@@ -5,7 +5,7 @@
     <div class="panel-body">
 
         <%if(api.get( 'access_token') && !api.isExpired()) {%>
-            <div><b>The login is valid until <%- new Date((api.get('access_granted') + api.get('expires_in')) * 1000).toUTCString()%></b>
+            <div><b>The login is valid until <%- new Date((api.get('access_granted') + api.get('expires_in')) * 1000).toString()%></b>
             </div>
             <%}%>
             <%if(api.isExpired()) {%>
