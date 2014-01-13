@@ -6,6 +6,7 @@
 
         <%if(api.get( 'access_token') && !api.isExpired()) {%>
             <div><b>The login is valid until <%- new Date((api.get('access_granted') + api.get('expires_in')) * 1000).toString()%></b>
+                <a href="javascript:void(0);" class="btn btn-logout">Forget Login</a>
             </div>
             <%}%>
             <%if(api.isExpired()) {%>
@@ -13,7 +14,7 @@
             <%}%>
             <%if(!api.get( 'access_token') || api.isExpired()) {%>
 
-                <a class="btn btn-<%- api.id %>" href="javascript:void(0);"><i class="fa fa-<%- api.id %>"></i>Sign-In with <%- api.get('name')%></a>
+                <a class="btn btn-login btn-<%- api.id %>" href="javascript:void(0);"><i class="fa fa-<%- api.id %>"></i>Sign-In with <%- api.get('name')%></a>
             <%} %>
         </div>
     </div>

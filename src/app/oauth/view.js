@@ -45,11 +45,15 @@ define(['lodash', 'backbone', './api/oauth',
         className: 'social-buttons-profile',
 
         events: {
-            'click a': 'authenticate'
+            'click a.btn-login': 'authenticate',
+            'click a.btn-logout': 'logout'
         },
 
         initialize: function() {
-            this.listenTo(this, 'authenticate', this.render);
+            this.listenTo(this.options.api, 'authenticate', function(api) {
+                this.render();
+                this.trigger('authenticate', api);
+            });
         },
 
         render: function() {
@@ -63,10 +67,13 @@ define(['lodash', 'backbone', './api/oauth',
             var self = this,
                 w = window.open(),
                 api = this.options.api;
-            api.request(w).then(function(resp) {
-                debugger;
-                self.trigger('authenticate', api, resp);
-            });
+            api.request(w);
+        },
+
+        logout: function(event) {
+            this.options.api.invalidate();
+            this.render();
+            this.trigger('logout');
         }
 
     });

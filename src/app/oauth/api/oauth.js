@@ -20,6 +20,7 @@ define(['lodash', 'backbone', 'when', 'crypto-js'], function(_, Backbone, when, 
             access_token: '',
             access_granted: 0,
             expires_in: 0,
+            state: '',
             authParams: {
                 response_type: 'token',
                 client_id: '',
@@ -37,6 +38,15 @@ define(['lodash', 'backbone', 'when', 'crypto-js'], function(_, Backbone, when, 
         isExpired: function() {
             return this.get('access_token') && !(this.get('access_granted') +
                 this.get('expires_in') > new Date().getTime() / 1000);
+        },
+
+        invalidate: function() {
+            this.sync('delete', this);
+
+            // reset to defaults
+            this.set(_.pick(this.defaults, ['access_token',
+                'access_granted', 'expires_in', 'state'
+            ]));
         },
 
         /**
@@ -160,7 +170,7 @@ define(['lodash', 'backbone', 'when', 'crypto-js'], function(_, Backbone, when, 
 
         initialize: function() {
             this.on('authenticate', function(model) {
-                this.sync('create', model);
+                this.sync('update', model);
             });
         }
     });

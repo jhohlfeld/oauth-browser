@@ -1,6 +1,6 @@
 .social-buttons {
     .social-buttons-profile {
-        .btn {
+        .btn-login {
             width: 20em;
             text-align: left;
             i.fa {
@@ -8,6 +8,14 @@
                 padding-right: 0.5em;
                 margin-right: .5em;
                 width: 1.5em;
+            }
+        }
+
+        .btn-logout {
+            .button-variant(@btn-default-color; @btn-default-bg; @btn-default-border);
+            float: right;
+            &:after {
+                clear: both;
             }
         }
     }

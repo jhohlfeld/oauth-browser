@@ -51,7 +51,6 @@ require(['jquery', 'app/oauth/view', 'lib/jquery.plugin', 'when',
     ],
     function($, oauthview, jqp, when, oauth) {
 
-
         var profile, apis = oauthview.apiCollection,
             browser = new oauthview.BrowserView({
                 apis: apis
