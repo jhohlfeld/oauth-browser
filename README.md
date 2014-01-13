@@ -2,6 +2,8 @@
 
 Experiment on the increasingly popular [oauth2][0] protocol. Various API providers already support this protocol in some form - including google plus, facebook and windows live.
 
+[![Gittip](http://badgr.co/gittip/jhohlfeld.png)](https://www.gittip.com/jhohlfeld/)
+
 ##Getting started
 
 Check it out
