@@ -1,6 +1,6 @@
 #OAuth browser
 
-Experiment on various web service's oauth capabilities - including google plus, facebook and windows live.
+Experiment on the increasingly popular [oauth2][0] protocol. Various API providers already support this protocol in some form - including google plus, facebook and windows live.
 
 ##Getting started
 
@@ -28,6 +28,6 @@ and run a web server (i.e. using python's simple http module)
 
 That's it! The server should now run on `localhost:4000` where you can access the project.
 
-
+[0]: http://oauth.net/2/
 [3]: http://gruntjs.com/
 [4]: http://bower.io/
