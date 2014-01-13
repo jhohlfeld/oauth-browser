@@ -1,7 +1,10 @@
-define(['lodash', 'backbone',
-    'ldsh!./tpl/view', 'ldsh!./tpl/profile'
+define(['lodash', 'backbone', './api/oauth',
+    'ldsh!./tpl/view', 'ldsh!./tpl/profile',
+    './api/google-plus', './api/facebook',
+    /*'./microsoft-live', './stack-exchange',
+    './linkedin'*/
 ], function(
-    _, Backbone, tpl_view, tpl_profile) {
+    _, Backbone, oauth, tpl_view, tpl_profile) {
 
     "use strict"
 
@@ -45,7 +48,9 @@ define(['lodash', 'backbone',
             'click a': 'authenticate'
         },
 
-        initialize: function() {},
+        initialize: function() {
+            this.listenTo(this, 'authenticate', this.render);
+        },
 
         render: function() {
             this.$el.html(this.template({
@@ -66,8 +71,17 @@ define(['lodash', 'backbone',
 
     });
 
+    // provider profiles may be added beyond the fifth dependency
+    var api_profiles = _.values(arguments).slice(5);
+
+    var apiCollection = new oauth.Collection(api_profiles);
+    apiCollection.fetch({
+        remove: false
+    });
+
     return {
         BrowserView: BrowserView,
-        ProfileView: ProfileView
+        ProfileView: ProfileView,
+        apiCollection: apiCollection
     };
 });

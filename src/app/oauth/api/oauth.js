@@ -34,6 +34,10 @@ define(['lodash', 'backbone', 'when', 'crypto-js'], function(_, Backbone, when, 
             }
         },
 
+        isExpired: function() {
+            return this.get('access_token') && !(this.get('access_granted') +
+                this.get('expires_in') > new Date().getTime() / 1000);
+        },
 
         /**
          * Form the auth request.
@@ -81,8 +85,8 @@ define(['lodash', 'backbone', 'when', 'crypto-js'], function(_, Backbone, when, 
                 }
                 this.set({
                     'access_token': resp.access_token,
-                    'access_granted': new Date().getTime(),
-                    'expires_in': resp.expires_in
+                    'access_granted': new Date().getTime() / 1000,
+                    'expires_in': parseInt(resp.expires_in)
                 });
             }
             return resp;
@@ -150,7 +154,7 @@ define(['lodash', 'backbone', 'when', 'crypto-js'], function(_, Backbone, when, 
 
 
     var Collection = Backbone.Collection.extend({
-        
+
         model: Model,
         localStorage: new Backbone.LocalStorage("app.oauth.api.collection"),
 
@@ -160,7 +164,6 @@ define(['lodash', 'backbone', 'when', 'crypto-js'], function(_, Backbone, when, 
             });
         }
     });
-
 
     return {
         Model: Model,

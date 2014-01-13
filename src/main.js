@@ -46,20 +46,16 @@ requirejs.config({
     }
 });
 
-require(['jquery', 'app/oauth/view', 'lib/jquery.plugin', 'when', 
-        'app/oauth/api/oauth',
-        'app/oauth/api/google-plus', 'app/oauth/api/facebook',
-        /*'./microsoft-live', './stack-exchange',
-    './linkedin'*/
+require(['jquery', 'app/oauth/view', 'lib/jquery.plugin', 'when',
+        'app/oauth/api/oauth'
     ],
     function($, oauthview, jqp, when, oauth) {
 
-        // provider profiles may be added beyond the third depenednecy
-        var api_profiles = _.values(arguments).slice(5),
-            apis = new oauth.Collection(api_profiles);
 
-        var browser = new oauthview.BrowserView({apis:apis}),
-            profile;
+        var profile, apis = oauthview.apiCollection,
+            browser = new oauthview.BrowserView({
+                apis: apis
+            });
         browser.on('select', function(key) {
             if (profile) {
                 profile.$el.remove();

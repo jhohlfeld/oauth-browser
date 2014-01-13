@@ -1,6 +1,19 @@
 <div class="panel panel-default">
-    <div class="panel-heading"><%- api.get('name')%></div>
-    <div class="panel-body">
-        <a class="btn btn-<%- api.id %>" href="javascript:void(0);"><i class="fa fa-<%- api.id %>"></i>Sign-In with <%- api.get('name')%></a>
+    <div class="panel-heading">
+        <%- api.get( 'name')%>
     </div>
-</div>
+    <div class="panel-body">
+
+        <%if(api.get( 'access_token') && !api.isExpired()) {%>
+            <div><b>The login is valid until <%- new Date((api.get('access_granted') + api.get('expires_in')) * 1000).toUTCString()%></b>
+            </div>
+            <%}%>
+            <%if(api.isExpired()) {%>
+                <div><b>The login has expired</b>
+            <%}%>
+            <%if(!api.get( 'access_token') || api.isExpired()) {%>
+
+                <a class="btn btn-<%- api.id %>" href="javascript:void(0);"><i class="fa fa-<%- api.id %>"></i>Sign-In with <%- api.get('name')%></a>
+            <%} %>
+        </div>
+    </div>
