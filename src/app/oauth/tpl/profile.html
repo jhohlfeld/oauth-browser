@@ -5,12 +5,16 @@
     <div class="panel-body">
 
         <%if(api.get( 'access_token') && !api.isExpired()) {%>
-            <div><b>The login is valid until <%- new Date((api.get('access_granted') + api.get('expires_in')) * 1000).toString()%></b>
-                <a href="javascript:void(0);" class="btn btn-logout">Forget Login</a>
+            <div class="row">
+                <div class="col-sm-8"><b>The login is valid until <%- new Date((api.get('access_granted') + api.get('expires_in')) * 1000).toString()%></b>
+                </div>
+                <div class="col-sm-4" style="text-align:right">
+                    <a href="javascript:void(0);" class="btn btn-logout">Forget Login</a>
+                </div>
             </div>
             <%}%>
             <%if(api.isExpired()) {%>
-                <div><b>The login has expired</b>
+                <div><b>The login has expired</b></div>
             <%}%>
             <%if(!api.get( 'access_token') || api.isExpired()) {%>
 
