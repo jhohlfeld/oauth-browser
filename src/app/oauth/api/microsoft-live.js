@@ -1,19 +1,16 @@
-define(['lodash', 'backbone'], function(_, Backbone) {
+define(['./oauth'], function(oauth) {
 
-    var config = {
-        name: 'Microsoft Live',
+    var attributes = {
+        id: 'windows',
+        name: 'Windows Live',
+        authUri: 'https://login.live.com/oauth20_authorize.srf',
         authParams: {
             response_type: 'token',
             client_id: '000000004C10C936',
-            redirect_uri: 'http://dev.peoplepool.netronaut.de:4000/blank.html',
+            redirect_uri: '',
             scope: 'wl.basic'
         },
-        authUri: 'https://login.live.com/oauth20_authorize.srf'
     };
 
-    return {
-        init: function(Profile) {
-            return Profile.apis['windows'] = new Profile(config);
-        }
-    };
+    return new oauth.Model(attributes);
 });

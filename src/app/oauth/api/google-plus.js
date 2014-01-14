@@ -16,18 +16,27 @@ define(['./oauth', 'lodash', 'backbone', 'when', 'jquery',
     };
 
     var GooglePlus = oauth.Model.extend({
-        setData: function(resp) {
-            this.data = {
-                displayName: resp.displayName,
-                occupation: resp.occupation,
-                skils: resp.skills,
-                emailAddress: resp.emails[0].value,
-                image: respimage.url
-            }
-        },
 
-        render: function(data) {
-            return tpl(this.data);
+        renderProfile: function() {
+            var d,
+                self = this,
+                deferred = when.defer();
+            if (d = this.get('profile_data')) {
+                return deferred.resolve(tpl(d));
+            }
+            this.requestProfile().then(function(resp) {
+                var data = {
+                    displayName: resp.displayName,
+                    occupation: resp.occupation,
+                    skills: resp.skills,
+                    emailAddress: resp.emails[0].value,
+                    image: resp.image.url,
+                    url: resp.url
+                };
+                self.set('profile_data', data);
+                deferred.resolve(tpl(data));
+            });
+            return deferred.promise;
         },
 
         requestProfile: function() {
@@ -35,16 +44,13 @@ define(['./oauth', 'lodash', 'backbone', 'when', 'jquery',
                 resolver = deferred.resolver,
                 url = 'https://www.googleapis.com/plus/v1/people/me',
                 params = _.map({
-                    'access_token': this.access_token
+                    'access_token': this.get('access_token')
                 }, function(v, k) {
                     return k + '=' + encodeURI(v);
                 }).join('&');
-
-            console.log(url + '?' + params);
             $.ajax({
                 url: url + '?' + params
             }).done(resolver.resolve).fail(resolver.reject);
-            deferred.promise.then(_.bind(this.setData, this));
             return deferred.promise;
         }
 

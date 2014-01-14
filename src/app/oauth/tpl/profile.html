@@ -1,24 +1,40 @@
 <div class="panel panel-default">
     <div class="panel-heading">
-        <%- api.get( 'name')%>
+        <%- api.get( 'name') %>
     </div>
     <div class="panel-body">
 
-        <%if(api.get( 'access_token') && !api.isExpired()) {%>
-            <div class="row">
-                <div class="col-sm-8"><b>The login is valid until <%- new Date((api.get('access_granted') + api.get('expires_in')) * 1000).toString()%></b>
-                </div>
-                <div class="col-sm-4" style="text-align:right">
-                    <a href="javascript:void(0);" class="btn btn-logout">Forget Login</a>
-                </div>
-            </div>
-            <%}%>
-            <%if(api.isExpired()) {%>
-                <div><b>The login has expired</b></div>
-            <%}%>
+        <div class="profile-view" id="profile-<%- api.id %>"></div>
+
+        <div class="row">
+
             <%if(!api.get( 'access_token') || api.isExpired()) {%>
 
-                <a class="btn btn-login btn-<%- api.id %>" href="javascript:void(0);"><i class="fa fa-<%- api.id %>"></i>Sign-In with <%- api.get('name')%></a>
+                <div class="col-sm-12">
+                    <a class="btn btn-login btn-<%- api.id %>" href="javascript:void(0);"><i class="fa fa-<%- api.id %>"></i>Sign-In with <%- api.get('name')%></a>
+                </div>
             <%} %>
+
         </div>
     </div>
+
+
+        <div class="panel-footer">
+             <%if(api.get('access_token') && !api.isExpired()) {%>
+                <div class="row">
+                    <div class="col-sm-8"><small>Expires: <%- new Date((api.get('access_granted') + api.get('expires_in')) * 1000).toString()%></small>
+                    </div>
+                    <div class="col-sm-4" style="text-align:right">
+                        <a href="javascript:void(0);" class="btn btn-logout">Forget Login</a>
+                    </div>
+                </div>
+            <%}%>
+
+            <%if(api.isExpired()) {%>
+                <div>
+                    <small>The login has expired</small>
+                </div>
+            <%}%>
+        </div>
+
+</div>

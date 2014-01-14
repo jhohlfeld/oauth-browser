@@ -17,6 +17,7 @@ define(['lodash', 'backbone', 'when', 'crypto-js'], function(_, Backbone, when, 
 
         defaults: {
             name: '',
+            profile_data: '',
             access_token: '',
             access_granted: 0,
             expires_in: 0,
@@ -38,6 +39,10 @@ define(['lodash', 'backbone', 'when', 'crypto-js'], function(_, Backbone, when, 
         isExpired: function() {
             return this.get('access_token') && !(this.get('access_granted') +
                 this.get('expires_in') > new Date().getTime() / 1000);
+        },
+
+        isActive: function() {
+            return this.get('access_token').length > 0 && !this.isExpired();
         },
 
         invalidate: function() {
@@ -158,6 +163,14 @@ define(['lodash', 'backbone', 'when', 'crypto-js'], function(_, Backbone, when, 
                     });
             }
             return resp;
+        },
+
+        requestProfile: function() {
+            return when.defer().promise;
+        },
+
+        renderProfile: function() {
+            return when.defer().promise;
         }
 
     });

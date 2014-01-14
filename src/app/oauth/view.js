@@ -1,7 +1,7 @@
 define(['lodash', 'backbone', './api/oauth',
     'ldsh!./tpl/view', 'ldsh!./tpl/profile',
     './api/google-plus', './api/facebook',
-    /*'./microsoft-live', './stack-exchange',
+    './api/microsoft-live'/*, './stack-exchange',
     './linkedin'*/
 ], function(
     _, Backbone, oauth, tpl_view, tpl_profile) {
@@ -33,7 +33,7 @@ define(['lodash', 'backbone', './api/oauth',
 
         select: function(event) {
             this.$('.active').removeClass('active');
-            var el = $(event.target);
+            var el = _.isObject(event) ? $(event.target) : this.$('[data-key=' + event + ']');
             el.addClass('active');
             this.trigger('select', el.data('key'));
         }
@@ -45,25 +45,33 @@ define(['lodash', 'backbone', './api/oauth',
         className: 'social-buttons-profile',
 
         events: {
-            'click a.btn-login': 'authenticate',
+            'click a.btn-login': 'login',
             'click a.btn-logout': 'logout'
         },
 
         initialize: function() {
-            this.listenTo(this.options.api, 'authenticate', function(api) {
+            var api = this.options.api;
+            this.listenTo(api, 'authenticate', function(api) {
                 this.render();
                 this.trigger('authenticate', api);
             });
         },
 
-        render: function() {
+        render: function(profile) {
+            var api = this.options.api;
             this.$el.html(this.template({
-                api: this.options.api
+                api: api
             }));
+            if (api.isActive()) {
+                var self = this;
+                api.renderProfile().then(function(html) {
+                    self.$('#profile-' + api.id).html(html);
+                });
+            }
             return this;
         },
 
-        authenticate: function(event) {
+        login: function(event) {
             var self = this,
                 w = window.open(),
                 api = this.options.api;

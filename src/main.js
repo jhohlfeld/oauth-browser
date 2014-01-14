@@ -51,36 +51,27 @@ require(['jquery', 'app/oauth/view', 'lib/jquery.plugin', 'when',
     ],
     function($, oauthview, jqp, when, oauth) {
 
-        var profile, apis = oauthview.apiCollection,
+        var profile, h, apis = oauthview.apiCollection,
             browser = new oauthview.BrowserView({
                 apis: apis
             });
-        browser.on('select', function(key) {
-            if (profile) {
-                profile.$el.remove();
-            }
+
+        var showProfile = function(key) {
             profile = new oauthview.ProfileView({
                 api: apis.get(key)
             });
-            profile.on('authenticate', function(api) {
-                console.log('authenticated using ' + api.get('name'));
-                console.log(api.attributes);
+        };
 
-                // when.chain(api.requestProfile(), profileResolver, api);
-            });
+        browser.on('select', function(key) {
+            window.location.hash = key;
+            if (profile) {
+                profile.$el.remove();
+            }
+            showProfile(key);
             profile.render().$el.appendTo('.social-buttons-details');
         });
         browser.render().$el.appendTo($('body'));
-
-        // var deferred = when.defer(),
-        //     profileResolver = deferred.resolver;
-
-
-        // deferred.promise.then(function(api) {
-        //     console.log('displaying profile view');
-        //     var profileView = new oauthview.ProfileView({
-        //         api: api
-        //     });
-        //     profileView.render().$el.appendTo('body');
-        // });
+        if ((h = window.location.hash.substr(1)) && apis.get(h)) {
+            browser.select(h);
+        }
     });

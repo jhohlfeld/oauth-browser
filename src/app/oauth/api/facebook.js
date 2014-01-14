@@ -1,4 +1,5 @@
-define(['./oauth', 'lodash'], function(oauth, _) {
+define(['./oauth'], function(oauth) {
+    
     var attributes = {
         id: 'facebook',
         name: 'Facebook',

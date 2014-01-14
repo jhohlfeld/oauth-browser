@@ -1,3 +1,20 @@
-<h2>Google Plus Profile for
-    <%- displayName %>
-</h2>
+<div class="row">
+	<div class="col-sm-9">
+		<p>
+			<b><%- displayName %></b><br/>
+			<%- occupation %><br />
+			<%- emailAddress %><br />
+		</p>
+	</div>
+	<div class="col-sm-3 image">
+		<a href="<%- url%>"><img src="<%- image %>" /><br/>
+		Google+ Profile</a>
+	</div>
+</div>
+
+<hr />
+
+<div>
+	Skills:<br />
+	<%- skills %>
+</div>
