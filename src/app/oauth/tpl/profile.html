@@ -22,9 +22,9 @@
         <div class="panel-footer">
              <%if(api.get('access_token') && !api.isExpired()) {%>
                 <div class="row">
-                    <div class="col-sm-8"><small>Expires: <%- new Date((api.get('access_granted') + api.get('expires_in')) * 1000).toString()%></small>
+                    <div class="col-xs-8"><small>Expires: <%- new Date((api.get('access_granted') + api.get('expires_in')) * 1000).toString()%></small>
                     </div>
-                    <div class="col-sm-4" style="text-align:right">
+                    <div class="col-xs-4" style="text-align:right">
                         <a href="javascript:void(0);" class="btn btn-logout">Forget Login</a>
                     </div>
                 </div>
