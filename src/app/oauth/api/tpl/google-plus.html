@@ -1,13 +1,13 @@
 <div class="row">
 	<div class="col-sm-9">
+		<h4><%- model.get('displayName') %></h4>
 		<p>
-			<b><%- displayName %></b><br/>
-			<%- occupation %><br />
-			<%- emailAddress %><br />
+			<%- model.get('occupation') %><br />
+			<%- model.get('emailAddress') %><br />
 		</p>
 	</div>
 	<div class="col-sm-3 image">
-		<a href="<%- url%>"><img src="<%- image %>" /><br/>
+		<a href="<%- model.get('url')%>"><img src="<%- model.get('image') %>" /><br/>
 		Google+ Profile</a>
 	</div>
 </div>
@@ -16,5 +16,5 @@
 
 <div>
 	Skills:<br />
-	<%- skills %>
+	<%- model.get('skills') %>
 </div>

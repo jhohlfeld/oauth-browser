@@ -3,7 +3,122 @@ define(['lodash', 'backbone', 'when', 'crypto-js'], function(_, Backbone, when, 
     "use strict"
 
     /**
-     * Auth provider profile.
+     * A view that renders data from a single profile.
+     *
+     * Override `handleResponse` to customize how raw data
+     *  recieved from the api is handled.
+     * 
+     * When creating instances, be sure to configure
+     *  with at the properties for template and api-url:
+     *
+     * @example
+     *     new ProfileView({
+     *       template: _.template('..'), 
+     *       url: 'https://api.com/me'
+     *     });
+     *
+     * @class ProfileView
+     */
+    var ProfileView = Backbone.View.extend({
+
+        defaultOptions: {
+            accessToken: '',
+            template: _.template(''),
+            modelClass: Backbone.Model,
+            url: ''
+        },
+
+        template: null,
+        model: null,
+
+        /**
+         * Initialize..
+         * 
+         * @method initialize
+         */
+        initialize: function() {
+            this.options = _.extend(this.defaultOptions, this.options);
+            this.template = this.options.template;
+        },
+
+        /**
+         * Called by render(), always returns a promise.
+         * 
+         * @method load
+         * @return {Promise} promise on the loaded data
+         */
+        load: function() {
+            var self = this,
+                deferred = when.defer();
+            if (this.model) {
+                return deferred.resolve(this.model);
+            }
+            var resolver = deferred.resolver,
+                params = _.map({
+                        'access_token': this.options.accessToken
+                    },
+                    function(v, k) {
+                        return k + '=' + encodeURI(v);
+                    }).join('&');
+            $.ajax({
+                url: this.options.url + '?' + params
+            }).done(function(resp) {
+                var data = self.handleResponse(resp);
+                self.model = new self.options.modelClass(data);
+                deferred.resolve(self.model);
+            }).fail(resolver.reject);
+            return deferred.promise;
+        },
+
+        /**
+         * Renders the view.
+         *  Replaces the view's `$el` as soon as 
+         *  {{#crossLink "Profile/load:method"}} resolves successfully. 
+         * 
+         * @method render
+         */
+        render: function() {
+            var self = this;
+            this.load().then(function(model, err) {
+                if (err) throw err;
+                self.$el.html(self.template({
+                    model: model
+                }));
+            });
+            return this;
+        },
+
+        /**
+         * Default response handling.
+         *  Override this for custom behavior.
+         * 
+         * @method handleResponse
+         */
+        handleResponse: function(resp) {
+            return resp;
+        }
+    });
+
+
+    /**
+     * Placeholder for profile view.
+     *
+     *  This view is not actually meant to be used.
+     *  It's just there to fill the gap for the 
+     *  yet-to-be-created, real view.
+     * 
+     * @class DefaultProfileView
+     */
+    var DefaultProfileView = ProfileView.extend({
+        render: function() {
+            this.$el.html('<i>to be implemented..</i>');
+            return this;
+        }
+    });
+
+
+    /**
+     * Auth provider model.
      *
      * Authentication providers are organized in profiles
      * which extend from {oauth.Model}.
@@ -36,15 +151,32 @@ define(['lodash', 'backbone', 'when', 'crypto-js'], function(_, Backbone, when, 
             }
         },
 
+        /**
+         * Whether the session expired.
+         * 
+         *  This implies that the session has been active earlier.
+         * 
+         * @method isExpired
+         */
         isExpired: function() {
             return this.get('access_token') && !(this.get('access_granted') +
                 this.get('expires_in') > new Date().getTime() / 1000);
         },
 
+        /**
+         * Whether the session is active.
+         * 
+         * @method isActive
+         */
         isActive: function() {
             return this.get('access_token').length > 0 && !this.isExpired();
         },
 
+        /**
+         * Invalidate session - logout if you like.
+         * 
+         * @method invalidate
+         */
         invalidate: function() {
             this.sync('delete', this);
 
@@ -108,9 +240,9 @@ define(['lodash', 'backbone', 'when', 'crypto-js'], function(_, Backbone, when, 
         },
 
         /**
-         * Request.
+         * Make an api call
          *
-         * Do the request. When finished, it will trigger an 'authenticate' event.
+         *  When finished, it will trigger an 'authenticate' event.
          *
          * @method request
          * @param {Window} A popup window instance
@@ -165,17 +297,24 @@ define(['lodash', 'backbone', 'when', 'crypto-js'], function(_, Backbone, when, 
             return resp;
         },
 
-        requestProfile: function() {
-            return when.defer().promise;
-        },
-
-        renderProfile: function() {
-            return when.defer().promise;
+        /**
+         * Return a readily configured profile view.
+         *
+         *  Override this to implement your custom view.
+         * 
+         * @method getProfileView
+         */
+        getProfileView: function() {
+            return new DefaultProfileView();
         }
-
     });
 
 
+    /**
+     * Collection of auth provider models.
+     * 
+     * @class Collection
+     */
     var Collection = Backbone.Collection.extend({
 
         model: Model,
@@ -188,8 +327,10 @@ define(['lodash', 'backbone', 'when', 'crypto-js'], function(_, Backbone, when, 
         }
     });
 
+
     return {
         Model: Model,
-        Collection: Collection
+        Collection: Collection,
+        ProfileView: ProfileView
     };
 });

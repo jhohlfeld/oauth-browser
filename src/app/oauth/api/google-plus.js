@@ -1,5 +1,5 @@
 "use strict"
-define(['./oauth', 'lodash', 'backbone', 'when', 'jquery',
+define(['../oauth', 'lodash', 'backbone', 'when', 'jquery',
     'ldsh!./tpl/google-plus'
 ], function(oauth, _, Backbone, when, $, tpl) {
 
@@ -15,43 +15,28 @@ define(['./oauth', 'lodash', 'backbone', 'when', 'jquery',
         },
     };
 
+    var ProfileView = oauth.ProfileView.extend({
+        handleResponse: function(resp) {
+            return {
+                displayName: resp.displayName,
+                occupation: resp.occupation,
+                skills: resp.skills,
+                emailAddress: resp.emails[0].value,
+                image: resp.image.url,
+                url: resp.url
+            };
+        }
+    });
+
     var GooglePlus = oauth.Model.extend({
 
-        renderProfile: function() {
-            var d,
-                self = this,
-                deferred = when.defer();
-            if (d = this.get('profile_data')) {
-                return deferred.resolve(tpl(d));
-            }
-            this.requestProfile().then(function(resp) {
-                var data = {
-                    displayName: resp.displayName,
-                    occupation: resp.occupation,
-                    skills: resp.skills,
-                    emailAddress: resp.emails[0].value,
-                    image: resp.image.url,
-                    url: resp.url
-                };
-                self.set('profile_data', data);
-                deferred.resolve(tpl(data));
-            });
-            return deferred.promise;
-        },
-
-        requestProfile: function() {
-            var deferred = when.defer(),
-                resolver = deferred.resolver,
-                url = 'https://www.googleapis.com/plus/v1/people/me',
-                params = _.map({
-                    'access_token': this.get('access_token')
-                }, function(v, k) {
-                    return k + '=' + encodeURI(v);
-                }).join('&');
-            $.ajax({
-                url: url + '?' + params
-            }).done(resolver.resolve).fail(resolver.reject);
-            return deferred.promise;
+        getProfileView: function() {
+            return new ProfileView({
+                accessToken: this.get('access_token'),
+                modelClass: Backbone.Model,
+                template: tpl,
+                url: 'https://www.googleapis.com/plus/v1/people/me'
+            })
         }
 
     });

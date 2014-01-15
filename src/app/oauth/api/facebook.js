@@ -1,5 +1,5 @@
-define(['./oauth'], function(oauth) {
-    
+define(['../oauth', 'ldsh!./tpl/facebook'], function(oauth, tpl) {
+
     var attributes = {
         id: 'facebook',
         name: 'Facebook',
@@ -13,5 +13,15 @@ define(['./oauth'], function(oauth) {
         }
     };
 
-    return new oauth.Model(attributes);
+    var Facebook = oauth.Model.extend({
+        getProfileView: function() {
+            return new oauth.ProfileView({
+                accessToken: this.get('access_token'),
+                template: tpl,
+                url: 'https://graph.facebook.com/me'
+            });
+        }
+    });
+
+    return new Facebook(attributes);
 });

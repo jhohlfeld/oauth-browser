@@ -1,21 +1,22 @@
-define(['lodash', 'backbone', './api/oauth',
-    'ldsh!./tpl/view', 'ldsh!./tpl/profile',
+define(['lodash', 'backbone', './oauth',
+    'ldsh!./tpl/main', 'ldsh!./tpl/detail',
     './api/google-plus', './api/facebook',
-    './api/microsoft-live'/*, './stack-exchange',
+    './api/microsoft-live'
+    /*, './stack-exchange',
     './linkedin'*/
 ], function(
-    _, Backbone, oauth, tpl_view, tpl_profile) {
+    _, Backbone, oauth, tplMain, tplDetail) {
 
     "use strict"
 
     /**
-     * Login view..
+     * The main view.
      *
      * @class BrowserView
      */
     var BrowserView = Backbone.View.extend({
 
-        template: tpl_view,
+        template: tplMain,
         className: 'social-buttons container',
 
         events: {
@@ -39,9 +40,15 @@ define(['lodash', 'backbone', './api/oauth',
         }
     });
 
-    var ProfileView = Backbone.View.extend({
 
-        template: tpl_profile,
+    /**
+     * View that displays the api details.
+     *
+     * @class DetailView
+     */
+    var DetailView = Backbone.View.extend({
+
+        template: tplDetail,
         className: 'social-buttons-profile',
 
         events: {
@@ -62,11 +69,12 @@ define(['lodash', 'backbone', './api/oauth',
             this.$el.html(this.template({
                 api: api
             }));
+
+            // if logged in, render profile view
             if (api.isActive()) {
-                var self = this;
-                api.renderProfile().then(function(html) {
-                    self.$('#profile-' + api.id).html(html);
-                });
+                this.$('.profile-view')
+                    .before(api.getProfileView().render().$el)
+                    .remove();
             }
             return this;
         },
@@ -96,7 +104,7 @@ define(['lodash', 'backbone', './api/oauth',
 
     return {
         BrowserView: BrowserView,
-        ProfileView: ProfileView,
+        DetailView: DetailView,
         apiCollection: apiCollection
     };
 });

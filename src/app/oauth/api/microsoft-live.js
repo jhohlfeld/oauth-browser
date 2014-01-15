@@ -1,4 +1,4 @@
-define(['./oauth'], function(oauth) {
+define(['../oauth'], function(oauth) {
 
     var attributes = {
         id: 'windows',

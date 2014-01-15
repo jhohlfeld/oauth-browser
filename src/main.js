@@ -47,7 +47,7 @@ requirejs.config({
 });
 
 require(['jquery', 'app/oauth/view', 'lib/jquery.plugin', 'when',
-        'app/oauth/api/oauth'
+        'app/oauth/oauth'
     ],
     function($, oauthview, jqp, when, oauth) {
 
@@ -57,7 +57,7 @@ require(['jquery', 'app/oauth/view', 'lib/jquery.plugin', 'when',
             });
 
         var showProfile = function(key) {
-            profile = new oauthview.ProfileView({
+            profile = new oauthview.DetailView({
                 api: apis.get(key)
             });
         };
