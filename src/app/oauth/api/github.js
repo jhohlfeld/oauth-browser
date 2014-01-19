@@ -1,15 +1,15 @@
-define(['lodash'], function(_) {
-    var config = {
+define(['../oauth', 'lodash'], function(oauth, _) {
+    var attributes = {
+        id: 'github',
         name: 'GitHub',
         authUri: 'https://github.com/login/oauth/authorize',
         authParams: {
+            response_type: 'code',
             client_id: '9c48eeb8190d5452b88c',
-            redirect_uri: 'http://localhost:4000/blank.html',
-            response_type: 'token',
+            redirect_uri: '',
             scope: 'user:email',
-            state: ''   // unguessable random string!
         }
     };
 
-    return config;
+    return new oauth.Model(attributes);
 });

@@ -1,7 +1,19 @@
-.social-buttons {
+.social-buttons.container {
+
+    margin: 2em auto;
+
+    .header {
+        margin-bottom: 1em;
+        img {
+            margin: 0 1.5em 1.5em 0;
+        }
+        &:after {
+            clear: both;
+        }
+    }
+
     .social-buttons-profile {
         .btn-login {
-            width: 20em;
             text-align: left;
             i.fa {
                 border-right: 1px solid;

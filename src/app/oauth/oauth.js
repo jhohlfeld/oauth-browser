@@ -7,13 +7,13 @@ define(['lodash', 'backbone', 'when', 'crypto-js'], function(_, Backbone, when, 
      *
      * Override `handleResponse` to customize how raw data
      *  recieved from the api is handled.
-     * 
+     *
      * When creating instances, be sure to configure
      *  with at the properties for template and api-url:
      *
      * @example
      *     new ProfileView({
-     *       template: _.template('..'), 
+     *       template: _.template('..'),
      *       url: 'https://api.com/me'
      *     });
      *
@@ -33,7 +33,7 @@ define(['lodash', 'backbone', 'when', 'crypto-js'], function(_, Backbone, when, 
 
         /**
          * Initialize..
-         * 
+         *
          * @method initialize
          */
         initialize: function() {
@@ -43,7 +43,7 @@ define(['lodash', 'backbone', 'when', 'crypto-js'], function(_, Backbone, when, 
 
         /**
          * Called by render(), always returns a promise.
-         * 
+         *
          * @method load
          * @return {Promise} promise on the loaded data
          */
@@ -72,9 +72,9 @@ define(['lodash', 'backbone', 'when', 'crypto-js'], function(_, Backbone, when, 
 
         /**
          * Renders the view.
-         *  Replaces the view's `$el` as soon as 
-         *  {{#crossLink "Profile/load:method"}} resolves successfully. 
-         * 
+         *  Replaces the view's `$el` as soon as
+         *  {{#crossLink "Profile/load:method"}} resolves successfully.
+         *
          * @method render
          */
         render: function() {
@@ -91,7 +91,7 @@ define(['lodash', 'backbone', 'when', 'crypto-js'], function(_, Backbone, when, 
         /**
          * Default response handling.
          *  Override this for custom behavior.
-         * 
+         *
          * @method handleResponse
          */
         handleResponse: function(resp) {
@@ -104,9 +104,9 @@ define(['lodash', 'backbone', 'when', 'crypto-js'], function(_, Backbone, when, 
      * Placeholder for profile view.
      *
      *  This view is not actually meant to be used.
-     *  It's just there to fill the gap for the 
+     *  It's just there to fill the gap for the
      *  yet-to-be-created, real view.
-     * 
+     *
      * @class DefaultProfileView
      */
     var DefaultProfileView = ProfileView.extend({
@@ -153,19 +153,20 @@ define(['lodash', 'backbone', 'when', 'crypto-js'], function(_, Backbone, when, 
 
         /**
          * Whether the session expired.
-         * 
+         *
          *  This implies that the session has been active earlier.
-         * 
+         *
          * @method isExpired
          */
         isExpired: function() {
-            return this.get('access_token') && !(this.get('access_granted') +
-                this.get('expires_in') > new Date().getTime() / 1000);
+            var expires = this.get('expires_in') > 0 ? this.get('access_granted') +
+                this.get('expires_in') : 0;
+            return this.get('access_token') && !(expires > 0 ? (expires > new Date().getTime() / 1000) : true);
         },
 
         /**
          * Whether the session is active.
-         * 
+         *
          * @method isActive
          */
         isActive: function() {
@@ -174,7 +175,7 @@ define(['lodash', 'backbone', 'when', 'crypto-js'], function(_, Backbone, when, 
 
         /**
          * Invalidate session - logout if you like.
-         * 
+         *
          * @method invalidate
          */
         invalidate: function() {
@@ -200,7 +201,7 @@ define(['lodash', 'backbone', 'when', 'crypto-js'], function(_, Backbone, when, 
                 state = CryptoJS.SHA3(randomNumber.toString(16)),
                 params = this.get('authParams');
 
-            // state - anit XSRF measure
+            // state - anti XSRF measure
             params['state'] = state.toString(CryptoJS.enc.Hex);
             this.set('state', params['state']);
 
@@ -226,23 +227,34 @@ define(['lodash', 'backbone', 'when', 'crypto-js'], function(_, Backbone, when, 
          * @method handleResponse
          */
         handleResponse: function(resp) {
-            if (!resp.error) {
-                if (resp.state != this.get('state')) {
-                    throw new Error('State does not match, posible CSRF detected!');
-                }
-                this.set({
-                    'access_token': resp.access_token,
-                    'access_granted': new Date().getTime() / 1000,
-                    'expires_in': parseInt(resp.expires_in)
-                });
+            if (resp.error) {
+                throw new Error(resp);
             }
-            return resp;
+            this.set({
+                'access_token': resp.access_token,
+                'access_granted': new Date().getTime() / 1000,
+                'expires_in': resp.expires_in ? parseInt(resp.expires_in) : 0
+            });
+            return _.extend(resp, this.get('access_granted'));
+        },
+
+        handleError: function(resp) {
+            var error = new Error('Error while authenticating ' + this.id);
+            e.response = resp;
+            return e;
         },
 
         /**
-         * Make an api call
+         * Make an api call.
          *
-         *  When finished, it will trigger an 'authenticate' event.
+         *  When finished, an 'authenticate' event will be triggered.
+         *  We support OAuth 2.0 implicit grant as well as authentication
+         *  code flow. See http://tools.ietf.org/html/rfc6749 for details.
+         *
+         *  Not all authentication providers offer all flow types.
+         *  For the authentication code flow, we will need a round trip
+         *  via server proxy to exchange a temporary code for a permanent
+         *  auth_token.
          *
          * @method request
          * @param {Window} A popup window instance
@@ -252,25 +264,42 @@ define(['lodash', 'backbone', 'when', 'crypto-js'], function(_, Backbone, when, 
             var deferred = when.defer(),
                 poll,
                 resp,
-                self = this;
+                self = this,
+                promise = deferred.promise;
             (poll = function() {
                 try {
-                    resp = self.fetchResponse(w);
-                } catch (e) {}
+                    if (w.location.href != 'about:blank') {
+                        resp = self.fetchResponse(w);
+                    }
+                } catch (e) {
+
+                    // TODO: not clear whether this makes sense
+                    if(e.isOAuthError) {
+                        throw e;
+                    }
+                }
                 if (_.isObject(resp)) {
                     w.close();
-                    resp = self.handleResponse(resp);
-                    if (!resp.error) {
+
+                    // we might get another promise, if we are 
+                    // using authentication code grant flow.
+                    // yield() resolves our original promise with
+                    // the outcome of the new promise.
+                    if (when.isPromise(resp)) {
+                        promise.yield(resp);
+                    } else {
+
+                        // directly resolve our current promise
+                        // to authenticate with implicit grant flow.
+                        resp = self.handleResponse(resp);
                         deferred.resolve(resp);
                         self.trigger('authenticate', self);
-                    } else {
-                        deferred.reject(resp);
                     }
                     return;
                 }
                 setTimeout(poll, 100);
             })();
-            return deferred.promise;
+            return promise;
         },
 
 
@@ -284,15 +313,74 @@ define(['lodash', 'backbone', 'when', 'crypto-js'], function(_, Backbone, when, 
          * @method fetchResponse
          */
         fetchResponse: function(w) {
-            var hash = w.location.hash,
-                resp;
-            if (hash.search(/access_token/) != -1) {
-                resp = {};
-                var a = hash.substr(1).split('&'),
-                    p = _.forEach(a, function(q) {
-                        var k = q.split('=');
-                        resp[k[0]] = k[1];
+            var location = w.location,
+                search = location.search,
+                hash = location.hash,
+                resp,
+                responseErr = new Error('Unable to parse response!'),
+                stateErr = new Error('Response does not contain required \'state\'\
+                 parameter or state does not match. Possible CSRF detected!');
+            _.mixin(responseErr, {
+                isOAuthError: true
+            });
+            _.mixin(stateErr, {
+                isOAuthError: true
+            });
+            switch (this.get('authParams')['response_type']) {
+
+                // handle authorization code flow
+                case 'code':
+                    if (!(search.search(/\?code=/) != -1)) {
+                        throw responseErr;
+                    }
+                    var params = {},
+                        self = this;
+                    search.substr(1).split('&').forEach(function(v) {
+                        var p = v.split('=')
+                        params[p[0]] = p[1];
                     });
+
+                    // check against XSRF attacks
+                    if (!params.state || params.state != this.get('state')) {
+                        throw stateErr;
+                    }
+
+                    // start process to exchange temporary code for 
+                    // a permanent auth_token.
+                    // resp will end up as another promise, which we
+                    // will be returning.
+                    resp = when.promise(function(resolve, reject, notify) {
+                        if (!params['code']) {
+                            reject({
+                                'error': 'bad response - `code` missing',
+                                'response': resp
+                            });
+                        }
+                        $.getJSON('/authenticate/' + params.code, function(data) {
+                            data = self.handleResponse(data);
+                            self.trigger('authenticate', self);
+                            resolve(data);
+                        });
+                    });
+                    break;
+
+                    // handle most simple implicit grant flow
+                case 'token':
+                    if (!(hash.search(/access_token/) != -1)) {
+                        throw responseErr;
+                    }
+                    resp = {};
+                    var a = hash.substr(1).split('&'),
+                        p = _.forEach(a, function(q) {
+                            var k = q.split('=');
+                            resp[k[0]] = k[1];
+                        });
+
+                    // check against XSRF attacks
+                    if (!resp.state || resp.state != this.get('state')) {
+                        throw stateErr;
+                    }
+                    break;
             }
             return resp;
         },
@@ -301,7 +389,7 @@ define(['lodash', 'backbone', 'when', 'crypto-js'], function(_, Backbone, when, 
          * Return a readily configured profile view.
          *
          *  Override this to implement your custom view.
-         * 
+         *
          * @method getProfileView
          */
         getProfileView: function() {
@@ -312,7 +400,7 @@ define(['lodash', 'backbone', 'when', 'crypto-js'], function(_, Backbone, when, 
 
     /**
      * Collection of auth provider models.
-     * 
+     *
      * @class Collection
      */
     var Collection = Backbone.Collection.extend({

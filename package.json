@@ -1,22 +1,24 @@
 {
-    "name": "oauth-browser",
-    "version": "0.0.1",
-    "description": "Experiment on various web service's oauth capabilities - including google plus, facebook and windows live.",
-    "main": "src/index.html",
-    "dependencies": {
-        "grunt": "~0.4.2"
-    },
-    "devDependencies": {
-        "grunt-bower-task": "~0.3.4",
-        "grunt-contrib-less": "~0.8.3"
-    },
-    "scripts": {
-        "test": "echo \"Error: no test specified\" && exit 1"
-    },
-    "keywords": [
-        "oauth2",
-        "implicit"
-    ],
-    "author": "Jakob Hohlfeld <jakob.hohlfeld@netronaut.de>",
-    "license": "MIT"
+  "name": "oauth-browser",
+  "version": "0.0.6",
+  "description": "Experiment on various web service's oauth capabilities - including google plus, facebook and windows live.",
+  "main": "src/index.html",
+  "dependencies": {
+    "grunt": "~0.4.2",
+    "express": "~3.4.8"
+  },
+  "devDependencies": {
+    "grunt-bower-task": "~0.3.4",
+    "grunt-contrib-less": "~0.8.3"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [
+    "oauth2",
+    "implicit"
+  ],
+  "author": "Jakob Hohlfeld <jakob.hohlfeld@netronaut.de>",
+  "license": "MIT",
+  "repository": "https://github.com/jhohlfeld/oauth-browser"
 }

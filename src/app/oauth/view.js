@@ -1,8 +1,8 @@
 define(['lodash', 'backbone', './oauth',
     'ldsh!./tpl/main', 'ldsh!./tpl/detail',
     './api/google-plus', './api/facebook',
-    './api/microsoft-live'
-    /*, './stack-exchange',
+    './api/microsoft-live', './api/github', 
+    './api/stack-exchange'/*,
     './linkedin'*/
 ], function(
     _, Backbone, oauth, tplMain, tplDetail) {
@@ -83,7 +83,11 @@ define(['lodash', 'backbone', './oauth',
             var self = this,
                 w = window.open(),
                 api = this.options.api;
-            api.request(w);
+            api.request(w).then(function(response, err) {
+
+                // TODO: proper error handling!
+                if(err) console.err(err);
+            });
         },
 
         logout: function(event) {
