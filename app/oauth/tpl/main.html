@@ -1,0 +1,17 @@
+<div class="row">
+    <div class="col-sm-4">
+        <div class="panel panel-default provider-list">
+            <div class="panel-heading">OAuth2 Providers</div>
+            <div class="list-group">
+                <% apis.forEach(function(api) { %>
+                    <a href="javascript:void(0)" class="list-group-item" data-key="<%-api.id%>">
+                        <%- api.get( 'name')%>
+                    </a>
+                    <% }); %>
+            </div>
+        </div>
+    </div>
+    <div class="col-sm-8 social-buttons-details">
+        <div class="info"><i class="fa fa-arrow-left"></i> Start by slecting a provider from the list.</div>
+    </div>
+</div>
