@@ -1,7 +1,7 @@
-OAuth 2.0 Browser
-=================
+OAuth Browser
+=============
 
-Experiment on OAuth capabilities of different api providers.
+Experiment on OAuth 2.0 capabilities of different api providers.
 
 This is the demo page. Return to the project repository [here][1].
 
