@@ -1,5 +1,5 @@
 requirejs.config({
-    baseUrl: 'oauth-browser/',
+    baseUrl: '.',
     paths: {
         jquery: 'lib/jquery/jquery',
         backbone_org: 'lib/backbone/backbone',
