@@ -20,7 +20,7 @@ Clone the repository
 
     $ git clone git@github.com:jhohlfeld/oauth-browser.git
 
-If not already done, read about [grunt][3] and [bower][4].
+If not already done, read about [grunt][3] and [bower][4]. You'll need [node.js][2], obviously.
 
 Enter the cloned dir and run `bower install`
 
@@ -31,16 +31,12 @@ With this command, install required 3rd party libs into `src/lib/` directory and
 
     $ grunt dev
 
-For now, we'll serve from `src/` dir (using python for convenience):
+For now, we'll serve from `src/` dir. There is a server for development purposes written in javascript:
 
     $ cd src/
-	$ python -m SimpleHTTPServer 4000 &
+	$ node server.js &
 
-Of course you are free to use any web server on any port.
-
-Now the server should now run on `localhost:4000` where you can access the project.
-
-To actually use this service, please read ahead:
+The server will start on `localhost:4000`, where you can view the rendered pages. To actually use this service, please read ahead:
 
 ### Windows Live
 
@@ -58,6 +54,7 @@ As a matter of fact, due to the limitations of windows live, we decided to take 
 [1]: https://trello.com/b/eiTVEUdf/oauth-browser
 
 [0]: http://oauth.net/2/
+[2]: http://nodejs.org/
 [3]: http://gruntjs.com/
 [4]: http://bower.io/
 [5]: http://www.lesscss.de/
