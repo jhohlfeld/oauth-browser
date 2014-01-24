@@ -1,18 +1,64 @@
+header {
+    position: relative;
+    padding: 1em;
+    background-color: #f0f0f0;
+    border-bottom: 1px solid rgba(0,0,0,.2);
+    box-shadow: 0px -1px 6px 0px rgba(0,0,0,.5);
+
+    .gradient {
+        position: absolute;
+        background-image: -webkit-gradient(linear, left top, left bottom, from(rgba(255,255,255,1)), to(rgba(255,255,255,0))); 
+        height: 100%;
+        width: 100%;
+        left: 0;
+        top: 0;
+    }
+
+    .background {
+        position: absolute;
+        background-image: url(../images/bg.jpg); 
+        opacity: .1;
+        height: 100%;
+        width: 100%;
+        left: 0;
+        top: 0;
+    }
+
+    [class^="col"] {
+        position: relative;
+        z-index: 1;
+    }
+
+    .logo {
+        z-index: 1;
+        font-size: 200%;
+        position: absolute;
+        padding: 4px 17px;
+        top: 3px;
+
+        img {
+            height: 56px;
+            position: relative;
+            top: -4px;
+            margin-right: .5em;
+        }
+    }
+
+
+}
+
 .social-buttons.container {
 
     margin: 2em auto;
 
-    .header {
-        margin-bottom: 1em;
-        img {
-            margin: 0 1.5em 1.5em 0;
-        }
-        &:after {
-            clear: both;
-        }
-    }
+    .social-buttons-details {
 
-    .social-buttons-profile {
+        .info {
+            color: #999;
+            margin: 8em 0;
+            text-align: center;
+        }
+
         .btn-login {
             text-align: left;
             i.fa {
@@ -27,8 +73,8 @@
             .button-variant(@btn-default-color; @btn-default-bg; @btn-default-border);
         }
 
-        .profile-view .image {
-            text-align: right;
+        .image {
+            text-align: center;
         }
 
         .panel-footer {

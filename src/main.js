@@ -68,7 +68,7 @@ require(['jquery', 'app/oauth/view', 'lib/jquery.plugin', 'when',
                 profile.$el.remove();
             }
             showProfile(key);
-            profile.render().$el.appendTo('.social-buttons-details');
+            $('.social-buttons-details').empty().append(profile.render().$el);
         });
         browser.render().$el.appendTo($('body'));
         if ((h = window.location.hash.substr(1)) && apis.get(h)) {

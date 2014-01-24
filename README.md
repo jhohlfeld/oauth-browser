@@ -1,18 +1,18 @@
 #OAuth browser
 
-Experiment on the increasingly popular [OAuth 2.0][0] protocol.
+Experiment on the [OAuth 2.0][0] protocol.
 
-OAuth lets the user of your web application authenticate via third party service and return an authenticated session token from that service. Various OAuth service providers already exist - for instance google Plus, Facebook, Twitter, GitHub, just to name a few. 
+OAuth lets the user of your web application authenticate using a third party service. A number of OAuth service providers already exist - for instance Google Plus, Facebook, Twitter, GitHub, just to name a few. 
 
-What we need is doing some research about which are the providers offering the service and how each provider's api is used. Though the protocol is very clear and simple, it is also very open and different providers behave differently. Quite a lot of them do not support the full range of the protocol.
+The goal of this experiment is to find out which providers are out there offering the service and how I can use the provider's api in each case. Though the protocol is very clear and simple, it's also very flexible and unrestrictive. Different providers implement the protocol to different grades, sometimes using different declarations etc.
 
-To showcase each providers cpabilities, we plan to implement a unified interface, based on [backbone][10], [bootstrap][11] and [requirejs][12]. We'll then create some simple views that let the user log in and show some limited profile information from each provider.
+To showcase each providers capabilities, I created a unified interface based on [backbone][10], [bootstrap][11] and [requirejs][12]. There are already some simple views that let the user log in and show some limited profile information from the selected provider.
 
-In a first step, we'll cover the providers that offer webclient-only, [implicit grant][20] flow. After that, we'll implement some server modules for each of the providers that restrain to offer [authorization coder grant][21] flow.
+In a first step, I will cover the providers that offer webclient-only, [implicit grant][20] flow. After that, I'll implement some server modules for each of the providers that restrain to offer [authorization coder grant][21] flow.
 
 ##Roadmap
 
-For roadmap and progress information see our [Trello Project Board][1].
+For roadmap and progress information see my [Trello Project Board][1].
 
 ##Getting started
 
