@@ -58,6 +58,7 @@ define(['lodash', 'backbone', './oauth',
 
         initialize: function() {
             var api = this.options.api;
+            this.apiProfileView = api.createProfileView();
             this.listenTo(api, 'authenticate', function(api) {
                 this.render();
                 this.trigger('authenticate', api);
@@ -73,7 +74,7 @@ define(['lodash', 'backbone', './oauth',
             // if logged in, render profile view
             if (api.isActive()) {
                 this.$('.profile-view')
-                    .before(api.getProfileView().render().$el)
+                    .before(this.apiProfileView.render().$el)
                     .remove();
             }
             return this;

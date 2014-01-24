@@ -22,14 +22,13 @@ define(['lodash', 'backbone', 'when', 'crypto-js'], function(_, Backbone, when, 
     var ProfileView = Backbone.View.extend({
 
         defaultOptions: {
-            accessToken: '',
+            apiModel: null,
             template: _.template(''),
-            modelClass: Backbone.Model,
+            profileModelClass: Backbone.Model,
             url: ''
         },
 
         template: null,
-        model: null,
 
         /**
          * Initialize..
@@ -39,6 +38,7 @@ define(['lodash', 'backbone', 'when', 'crypto-js'], function(_, Backbone, when, 
         initialize: function() {
             this.options = _.extend(this.defaultOptions, this.options);
             this.template = this.options.template;
+            this.apiModel = this.options.apiModel;
         },
 
         /**
@@ -48,14 +48,15 @@ define(['lodash', 'backbone', 'when', 'crypto-js'], function(_, Backbone, when, 
          * @return {Promise} promise on the loaded data
          */
         load: function() {
-            var self = this,
-                deferred = when.defer();
-            if (this.model) {
-                return deferred.resolve(this.model);
+            var model;
+            if ((model = this.apiModel.get('profile_data'))) {
+                return when.resolve(model);
             }
-            var resolver = deferred.resolver,
+            var self = this,
+                deferred = when.defer(),
+                resolver = deferred.resolver,
                 params = _.map({
-                        'access_token': this.options.accessToken
+                        'access_token': this.options.apiModel.get('access_token')
                     },
                     function(v, k) {
                         return k + '=' + encodeURI(v);
@@ -64,8 +65,9 @@ define(['lodash', 'backbone', 'when', 'crypto-js'], function(_, Backbone, when, 
                 url: this.options.url + '?' + params
             }).done(function(resp) {
                 var data = self.handleResponse(resp);
-                self.model = new self.options.modelClass(data);
-                deferred.resolve(self.model);
+                model = new self.options.profileModelClass(data);
+                self.apiModel.set('profile_data', model);
+                deferred.resolve(model);
             }).fail(resolver.reject);
             return deferred.promise;
         },
@@ -151,6 +153,18 @@ define(['lodash', 'backbone', 'when', 'crypto-js'], function(_, Backbone, when, 
             }
         },
 
+        model: {
+            profile_data: Backbone.Model
+        },
+
+        initialize: function() {
+            this.profileView = this.createProfileView(this);
+            var self = this;
+            this.listenTo(this.profileView, 'load', function(data) {
+                self.set('profile_data', data);
+            });
+        },
+
         /**
          * Whether the session expired.
          *
@@ -185,6 +199,19 @@ define(['lodash', 'backbone', 'when', 'crypto-js'], function(_, Backbone, when, 
             this.set(_.pick(this.defaults, ['access_token',
                 'access_granted', 'expires_in', 'state'
             ]));
+        },
+
+        parse: function(response) {
+            for (var key in this.model) {
+                var embeddedClass = this.model[key];
+                var embeddedData = response[key];
+                if (_.isFunction(embeddedClass)) {
+                    response[key] = new embeddedClass(embeddedData, {
+                        parse: true
+                    });
+                }
+            }
+            return response;
         },
 
         /**
@@ -228,7 +255,7 @@ define(['lodash', 'backbone', 'when', 'crypto-js'], function(_, Backbone, when, 
          */
         handleResponse: function(resp) {
             if (resp.error) {
-                throw new Error(resp);
+                throw new Error(JSON.stringify(resp));
             }
             this.set({
                 'access_token': resp.access_token,
@@ -274,7 +301,7 @@ define(['lodash', 'backbone', 'when', 'crypto-js'], function(_, Backbone, when, 
                 } catch (e) {
 
                     // TODO: not clear whether this makes sense
-                    if(e.isOAuthError) {
+                    if (e.isOAuthError) {
                         throw e;
                     }
                 }
@@ -392,8 +419,8 @@ define(['lodash', 'backbone', 'when', 'crypto-js'], function(_, Backbone, when, 
          *
          * @method getProfileView
          */
-        getProfileView: function() {
-            return new DefaultProfileView();
+        createProfileView: function() {
+            return new DefaultProfileView(this);
         }
     });
 

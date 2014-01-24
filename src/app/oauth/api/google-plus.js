@@ -30,13 +30,14 @@ define(['../oauth', 'lodash', 'backbone', 'when', 'jquery',
 
     var GooglePlus = oauth.Model.extend({
 
-        getProfileView: function() {
-            return new ProfileView({
-                accessToken: this.get('access_token'),
-                modelClass: Backbone.Model,
+        createProfileView: function() {
+            var view = new ProfileView({
+                apiModel: this,
+                profileModelClass: Backbone.Model,
                 template: tpl,
                 url: 'https://www.googleapis.com/plus/v1/people/me'
-            })
+            });
+            return view;
         }
 
     });

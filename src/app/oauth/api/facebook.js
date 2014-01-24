@@ -14,9 +14,10 @@ define(['../oauth', 'ldsh!./tpl/facebook'], function(oauth, tpl) {
     };
 
     var Facebook = oauth.Model.extend({
-        getProfileView: function() {
+        createProfileView: function() {
             return new oauth.ProfileView({
-                accessToken: this.get('access_token'),
+                apiModel: this,
+                profileModelClass: Backbone.Model,
                 template: tpl,
                 url: 'https://graph.facebook.com/me'
             });

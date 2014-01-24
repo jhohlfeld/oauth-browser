@@ -70,8 +70,8 @@ app.all('*', function(req, res, next) {
 app.get('/authenticate/:code', function(req, res) {
     console.log('authenticating code:' + req.params.code);
     authenticate(req.params.code, function(err, response) {
-        var result = err || !response ? {
-            "error": "bad_code"
+        var result = err || (!response || !response['access_token']) ? {
+            "error": "undefined_error"
         } : response;
         console.log(result);
         res.json(result);
