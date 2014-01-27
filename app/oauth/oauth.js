@@ -235,9 +235,10 @@ define(['lodash', 'backbone', 'when', 'crypto-js'], function(_, Backbone, when, 
             // build redirect_uri
             if (!params.redirect_uri) {
                 var l = window.location,
-                    c = this.get('redirectUriConf');
+                    c = this.get('redirectUriConf'),
+                    lpath = l.pathname.match(/(.*?)([\w]+\.[\w#\?]+){0,1}$/)[1];
                 params.redirect_uri = (c.protocol || l.protocol) + '//' +
-                    (c.host || l.host) + '/' + c.path;
+                    (c.host || l.host) + lpath + c.path;
             }
 
             return this.get('authUri') + '?' + _.map(params, function(v, k) {
