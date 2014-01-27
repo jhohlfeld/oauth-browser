@@ -21,15 +21,16 @@ For roadmap and progress information see my [Trello Project Board][1].
 Clone the repository
 
     $ git clone git@github.com:jhohlfeld/oauth-browser.git
-
-If not already done, read about [grunt][3] and [bower][4]. You'll need [node.js][2], obviously.
-
-Enter the cloned dir and run `bower install`
-
     $ cd oauth-browser
+
+You will need [node.js][2] and [grunt][3] to run the application. Read the respective documentation to get both running, if not already done.
+
+Now your'e good to go. Install required dependencies (node gives you `npm` wheras successfull `npm install` gives you `bower`):
+
+    $ npm install
     $ bower install
 
-With this command, install required 3rd party libs into `src/lib/` directory and compile [less][5] into `src/css`:
+With the next command, required 3rd party libs are installed into `src/lib/` directory. Them [less][5] gets compiled into `src/css` - that's what we use `grunt` for:
 
     $ grunt dev
 
