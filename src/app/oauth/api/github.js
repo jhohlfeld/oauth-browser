@@ -6,6 +6,9 @@ define(['../oauth', 'lodash'], function(oauth, _) {
         authParams: {
             response_type: 'code',
             client_id: '9c48eeb8190d5452b88c',
+            accessRequestURL: function(code) {
+                return 'http://github-netronaut.cloudno.de/authenticate/' + code;
+            },
             redirect_uri: '',
             scope: 'user:email',
         }
