@@ -384,7 +384,14 @@ define(['lodash', 'backbone', 'when', 'crypto-js'], function(_, Backbone, when, 
                                 'response': resp
                             });
                         }
-                        $.getJSON('/authenticate/' + params.code, function(data) {
+                        var accessRequestURL,
+                            f = self.get('authParams')['accessRequestURL'];
+                        if (_.isFunction(f)) {
+                            accessRequestURL = f(params.code);
+                        } else {
+                            accessRequestURL = '/authenticate/' + params.code;
+                        }
+                        $.getJSON(accessRequestURL, function(data) {
                             data = self.handleResponse(data);
                             self.trigger('authenticate', self);
                             resolve(data);
