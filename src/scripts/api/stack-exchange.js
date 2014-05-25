@@ -1,3 +1,5 @@
+'use strict';
+
 define(['../oauth', 'lodash'], function(oauth, _) {
     var attributes = {
         id: 'stack-exchange',

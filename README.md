@@ -4,7 +4,7 @@ Experiment on the [OAuth 2.0][0] protocol.
 
 You find a demo page [here][30].
 
-OAuth lets the user of your web application authenticate using a third party service. A number of OAuth service providers already exist - for instance Google Plus, Facebook, Twitter, GitHub, just to name a few. 
+OAuth lets the user of your web application authenticate using a third party service. A number of OAuth service providers already exist - for instance Google Plus, Facebook, Twitter, GitHub, Stackexchange. 
 
 The goal of this experiment is to find out which providers are out there offering the service and how I can use the provider's api in each case. Though the protocol is very clear and simple, it's also very flexible and unrestrictive. Different providers implement the protocol to different grades, sometimes using different declarations etc.
 

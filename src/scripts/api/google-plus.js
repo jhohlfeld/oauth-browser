@@ -1,4 +1,5 @@
-"use strict"
+'use strict';
+
 define(['../oauth', 'lodash', 'backbone', 'when', 'jquery',
     'ldsh!./tpl/google-plus'
 ], function(oauth, _, Backbone, when, $, tpl) {
@@ -29,17 +30,14 @@ define(['../oauth', 'lodash', 'backbone', 'when', 'jquery',
     });
 
     var GooglePlus = oauth.Model.extend({
-
         createProfileView: function() {
             var view = new ProfileView({
                 apiModel: this,
-                profileModelClass: Backbone.Model,
                 template: tpl,
                 url: 'https://www.googleapis.com/plus/v1/people/me'
             });
             return view;
         }
-
     });
 
     return new GooglePlus(attributes);

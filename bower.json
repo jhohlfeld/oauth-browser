@@ -19,11 +19,22 @@
     "requirejs-plugins": "~1.0.2",
     "bootstrap-social-buttons": "~1.0.0",
     "when": "~2.7.0",
-    "crypto-js": "https://crypto-js.googlecode.com/files/CryptoJS%20v3.1.2.zip"
+    "crypto-js": "https://crypto-js.googlecode.com/files/CryptoJS%20v3.1.2.zip",
+    "font-awesome": "~4.1.0"
   },
   "exportsOverride": {
     "lodash": {
       "js": "dist/lodash.js"
+    },
+    "backbone" : {
+      "js": "*.js"
+    },
+    "backbone.epoxy": {
+      "js": "*.js"
+    },
+    "bootstrap-social-buttons": {
+      "css": "*.css",
+      "less": "*.less"
     }
   },
   "authors": [

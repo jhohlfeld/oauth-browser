@@ -3,14 +3,21 @@
   "version": "0.0.6",
   "description": "Experiment on various web service's oauth capabilities - including google plus, facebook and windows live.",
   "main": "src/index.html",
-  "dependencies": {
-    "grunt": "~0.4.2",
-    "bower": "~1.2.8",
-    "grunt-bower-task": "~0.3.4",
-    "grunt-contrib-less": "~0.8.3"
-  },
+  "dependencies": {},
   "devDependencies": {
-    "express": "~3.4.8"
+    "bower": "~1.2.8",
+    "express": "~3.4.8",
+    "grunt": "~0.4.2",
+    "grunt-bower-task": "~0.3.4",
+    "grunt-contrib-clean": "^0.5.0",
+    "grunt-contrib-connect": "^0.7.1",
+    "grunt-contrib-jshint": "^0.10.0",
+    "grunt-contrib-less": "~0.8.3",
+    "grunt-contrib-watch": "^0.6.1",
+    "grunt-newer": "^0.7.0",
+    "jshint-stylish": "^0.2.0",
+    "load-grunt-tasks": "~0.2.0",
+    "time-grunt": "^0.3.1"
   },
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"

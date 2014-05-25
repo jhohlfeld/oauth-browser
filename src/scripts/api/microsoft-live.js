@@ -1,3 +1,5 @@
+'use strict';
+
 define(['../oauth'], function(oauth) {
 
     var attributes = {
